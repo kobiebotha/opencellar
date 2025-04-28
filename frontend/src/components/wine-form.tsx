@@ -12,8 +12,7 @@ const schema = z.object({
   name: z.string().min(1, 'Name is required'),
   vintage: z.number().min(1900).max(new Date().getFullYear()),
   count: z.number().min(1),
-  bin_id: z.string().min(1, 'Bin is required'),
-  value: z.number().min(0),
+  bin_id: z.string().min(1, 'Bin is required')
 });
 
 type FormData = z.infer<typeof schema>;
@@ -27,8 +26,7 @@ export function WineForm({ bins, onSuccess }: { bins: Bin[]; onSuccess: () => vo
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      count: 1,
-      value: 0,
+      count: 1
     },
   });
 

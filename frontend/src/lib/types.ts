@@ -17,7 +17,6 @@ export type Wine = {
   name: string;
   vintage: number;
   drink_between: string;
-  value: number;
 };
 
 export type DrinkReason = 'gifted' | 'missing' | 'drank from cellar' | 'sold';

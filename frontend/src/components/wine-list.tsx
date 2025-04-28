@@ -68,7 +68,6 @@ export function WineList({ wines, onUpdate }: { wines: Wine[]; onUpdate: () => v
             <option value="name">Name</option>
             <option value="vintage">Vintage</option>
             <option value="count">Count</option>
-            <option value="value">Value</option>
           </select>
         </div>
         <div className="sm:w-48">
@@ -97,9 +96,6 @@ export function WineList({ wines, onUpdate }: { wines: Wine[]; onUpdate: () => v
             </p>
             <p className="text-sm text-muted-foreground">
               Bottles: {wine.count}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Value: ${wine.value.toFixed(2)}
             </p>
             {wine.count > 0 && (
               <div className="mt-4 space-y-2">
