@@ -112,18 +112,6 @@ export function WineForm({ bins, onSuccess }: { bins: Bin[]; onSuccess: () => vo
         )}
       </div>
 
-      <div>
-        <Label htmlFor="value">Value per Bottle</Label>
-        <Input
-          id="value"
-          type="number"
-          step="0.01"
-          {...register('value', { valueAsNumber: true })}
-        />
-        {errors.value && (
-          <p className="text-sm text-destructive">{errors.value.message}</p>
-        )}
-      </div>
 
       <div>
         <Label htmlFor="bin_id">Bin</Label>
