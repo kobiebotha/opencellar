@@ -5,9 +5,15 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { supabase } from '@/src/lib/supabase';
 
-export function WineList({ wines, onUpdate }: { wines: Wine[]; onUpdate: () => void }) {
+const Spinner = () => (
+  <div className="flex justify-center items-center h-32">
+    <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary"></div>
+  </div>
+);
+
+export function WineList({ wines, onUpdate, isLoading }: { wines: Wine[]; onUpdate: () => void; isLoading?: boolean }) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState<keyof Wine>('name');
+  const [sortBy, setSortBy] = useState<keyof Wine>('vintage');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [consumingWineId, setConsumingWineId] = useState<string | null>(null);
 
@@ -49,6 +55,10 @@ export function WineList({ wines, onUpdate }: { wines: Wine[]; onUpdate: () => v
         ? String(aValue).localeCompare(String(bValue))
         : String(bValue).localeCompare(String(aValue));
     });
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <div className="space-y-4">
@@ -93,15 +103,17 @@ export function WineList({ wines, onUpdate }: { wines: Wine[]; onUpdate: () => v
         {filteredWines.map((wine) => (
           <div
             key={wine.id}
-            className="p-4 rounded-lg border border-border bg-card"
+            className="p-4 rounded-lg border border-border bg-card flex flex-col justify-between"
           >
-            <h3 className="text-lg font-semibold">{wine.name}</h3>
-            <p className="text-sm text-muted-foreground">
-              Vintage: {wine.vintage}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Bottles: {wine.count}
-            </p>
+            <div> {/* Wrapper for text content */}
+              <h3 className="text-lg font-semibold">{wine.name}</h3>
+              <p className="text-sm text-muted-foreground">
+                Vintage: {wine.vintage}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Bottles: {wine.count}
+              </p>
+            </div>
             {wine.count > 0 && (
               <div className="mt-4 space-y-2">
                 <Button

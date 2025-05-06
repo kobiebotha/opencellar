@@ -18,6 +18,7 @@ export function Home({ user, handleSignOut }: HomeProps) {
   const [storageLocations, setStorageLocations] = useState<StorageLocation[]>([]);
   const [bins, setBins] = useState<Bin[]>([]);
   const [wines, setWines] = useState<Wine[]>([]);
+  const [isLoadingWines, setIsLoadingWines] = useState(false);
 
   const fetchStorageLocations = async () => {
     if (!user) return;
@@ -39,10 +40,6 @@ export function Home({ user, handleSignOut }: HomeProps) {
       return;
     }
     if (storageLocationIds.length === 0) {
-        // Potentially set bins to empty or handle as an initial state
-        // depending on whether bins can exist without storage locations
-        // or if this is just a transient state during loading.
-        // For now, if there are no storage locations, there can be no bins.
         console.error('no bins while trying to adda  wine, something went wrong');
         setBins([]);
         return;
@@ -70,23 +67,38 @@ export function Home({ user, handleSignOut }: HomeProps) {
         setWines([]);
         return;
     }
-    const { data, error } = await supabase
-      .from('wines')
-      .select()
-      .in('bin_id', binIds)
-      .gt('count', 0);
 
-    if (error) {
-        console.error('Error fetching wines:', error);
+    if (binIds.length === 0) { // Check for empty binIds to prevent unnecessary fetches
         setWines([]);
         return;
     }
-    setWines(data || []);
+
+    try {
+        const { data, error } = await supabase
+          .from('wines')
+          .select()
+          .in('bin_id', binIds)
+          .gt('count', 0);
+    
+        if (error) {
+            console.error('Error fetching wines:', error);
+            setWines([]);
+            return;
+        } else {
+            setWines(data || []);
+        }
+    } catch (e) {
+        console.error('Exception while fetching wines:', e);
+        setWines([]);
+    } finally {
+        setIsLoadingWines(false); // Set loading to false after fetching or error
+    };
   };
 
   useEffect(() => {
     if (user) {
-      fetchStorageLocations();
+        setIsLoadingWines(true); 
+        fetchStorageLocations();
     } else {
       setView('cellar');
       setStorageLocations([]);
@@ -135,7 +147,7 @@ export function Home({ user, handleSignOut }: HomeProps) {
         </div>
 
         {view === 'cellar' ? (
-          <WineList wines={wines} onUpdate={fetchWines} />
+          <WineList wines={wines} onUpdate={fetchWines} isLoading={isLoadingWines} />
         ) : (
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             <div className="p-6 rounded-lg border border-border">
