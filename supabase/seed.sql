@@ -42,7 +42,9 @@ INSERT INTO wines (id, bin_id, count, name, vintage, drink_between) VALUES
 ('88888888-8888-8888-8888-888888888888', '55555555-5555-5555-5555-555555555555', 8, 'Cabernet Sauvignon', 2016, '[2018-01-01,2023-12-31]');
 
 -- Insert into drink_log
-INSERT INTO drink_log (id, wine_id, drank_at, reason) VALUES
-('99999999-9999-9999-9999-999999999999', '66666666-6666-6666-6666-666666666666', '2023-01-15 14:30:00+00', 'drank from cellar'),
-('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '77777777-7777-7777-7777-777777777777', '2023-02-20 18:00:00+00', 'gifted'),
-('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '88888888-8888-8888-8888-888888888888', '2023-03-10 20:00:00+00', 'sold');
+WITH first_user AS (
+  SELECT id FROM auth.users LIMIT 1
+)
+INSERT INTO drink_log (id, wine_id, drank_at, reason, drank_by) VALUES
+('99999999-9999-9999-9999-999999999999', '66666666-6666-6666-6666-666666666666', '2023-01-15 14:30:00+00', 'drank from cellar', (SELECT id FROM first_user)),
+('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '77777777-7777-7777-7777-777777777777', '2023-02-20 18:00:00+00', 'gifted', (SELECT id FROM first_user));

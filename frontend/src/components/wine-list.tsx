@@ -4,6 +4,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { supabase } from '@/src/lib/supabase';
+import type { User } from '@supabase/supabase-js';
 
 const Spinner = () => (
   <div className="flex justify-center items-center h-32">
@@ -11,13 +12,13 @@ const Spinner = () => (
   </div>
 );
 
-export function WineList({ wines, onUpdate, isLoading }: { wines: Wine[]; onUpdate: () => void; isLoading?: boolean }) {
+export function WineList({ wines, onUpdate, isLoading, user }: { wines: Wine[]; onUpdate: () => void; isLoading?: boolean; user: User }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<keyof Wine>('vintage');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [consumingWineId, setConsumingWineId] = useState<string | null>(null);
 
-  const handleConsume = async (wine: Wine, reason: 'gifted' | 'missing' | 'drank from cellar' | 'sold') => {
+  const handleConsume = async (wine: Wine, reason: 'gifted' | 'missing' | 'drank from cellar') => {
     if (wine.count <= 0 || consumingWineId === wine.id) return;
 
     setConsumingWineId(wine.id);
@@ -32,7 +33,7 @@ export function WineList({ wines, onUpdate, isLoading }: { wines: Wine[]; onUpda
 
       const { error: logError } = await supabase
         .from('drink_log')
-        .insert([{ wine_id: wine.id, reason }]);
+        .insert([{ wine_id: wine.id, reason, drank_by: user.id }]);
 
       if (logError) throw logError;
 

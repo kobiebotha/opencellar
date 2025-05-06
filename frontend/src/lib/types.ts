@@ -22,7 +22,7 @@ export type Wine = {
   drink_between: string;
 };
 
-export type DrinkReason = 'gifted' | 'missing' | 'drank from cellar' | 'sold';
+export type DrinkReason = 'gifted' | 'missing' | 'drank from cellar';
 
 export type DrinkLog = {
   id: string;

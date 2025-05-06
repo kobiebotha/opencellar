@@ -147,7 +147,7 @@ export function Home({ user, handleSignOut }: HomeProps) {
         </div>
 
         {view === 'cellar' ? (
-          <WineList wines={wines} onUpdate={fetchWines} isLoading={isLoadingWines} />
+          <WineList wines={wines} onUpdate={fetchWines} isLoading={isLoadingWines} user={user} />
         ) : (
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             <div className="p-6 rounded-lg border border-border">

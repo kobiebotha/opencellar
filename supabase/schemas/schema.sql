@@ -22,10 +22,10 @@ create table wines (
   count integer not null,
   name text not null,
   vintage integer not null,
-  drink_between daterange not null
+  drink_between daterange
 );
 
-create type drink_reason as enum('gifted', 'missing', 'drank from cellar', 'sold');
+create type drink_reason as enum('gifted', 'missing', 'drank from cellar');
 
 create type wine_type as enum('red', 'white', 'dessert');
 
@@ -34,6 +34,7 @@ create table drink_log (
     gen_random_uuid()
   ),
   wine_id uuid not null references wines (id),
+  drank_by uuid not null references auth.users (id),
   drank_at timestamp with time zone default now(),
   reason drink_reason not null
 );
