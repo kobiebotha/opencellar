@@ -9,9 +9,12 @@ export function WineList({ wines, onUpdate }: { wines: Wine[]; onUpdate: () => v
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<keyof Wine>('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [consumingWineId, setConsumingWineId] = useState<string | null>(null);
 
   const handleConsume = async (wine: Wine, reason: 'gifted' | 'missing' | 'drank from cellar' | 'sold') => {
-    if (wine.count <= 0) return;
+    if (wine.count <= 0 || consumingWineId === wine.id) return;
+
+    setConsumingWineId(wine.id);
 
     try {
       const { error: updateError } = await supabase
@@ -30,6 +33,8 @@ export function WineList({ wines, onUpdate }: { wines: Wine[]; onUpdate: () => v
       onUpdate();
     } catch (error) {
       console.error('Error consuming wine:', error);
+    } finally {
+      setConsumingWineId(null);
     }
   };
 
@@ -103,16 +108,18 @@ export function WineList({ wines, onUpdate }: { wines: Wine[]; onUpdate: () => v
                   size="sm"
                   className="w-full"
                   onClick={() => handleConsume(wine, 'drank from cellar')}
+                  disabled={consumingWineId === wine.id}
                 >
-                  Consume
+                  {consumingWineId === wine.id ? 'Consuming...' : 'Consume'}
                 </Button>
                 <Button
                   size="sm"
                   variant="outline"
                   className="w-full"
                   onClick={() => handleConsume(wine, 'gifted')}
+                  disabled={consumingWineId === wine.id}
                 >
-                  Gift
+                  {consumingWineId === wine.id ? 'Gifting...' : 'Gift'}
                 </Button>
               </div>
             )}
