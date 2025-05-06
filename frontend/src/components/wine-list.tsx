@@ -114,14 +114,6 @@ export function WineList({ wines, onUpdate }: { wines: Wine[]; onUpdate: () => v
                 >
                   Gift
                 </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => handleConsume(wine, 'sold')}
-                >
-                  Sell
-                </Button>
               </div>
             )}
           </div>
