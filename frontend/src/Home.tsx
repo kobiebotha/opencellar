@@ -64,7 +64,8 @@ export function Home({ user, handleSignOut }: HomeProps) {
     const { data, error } = await supabase
       .from('wines')
       .select()
-      .in('bin_id', binIds);
+      .in('bin_id', binIds)
+      .gt('count', 0);
 
     if (error) {
         console.error('Error fetching wines:', error);
@@ -143,7 +144,7 @@ export function Home({ user, handleSignOut }: HomeProps) {
 
             <div className="p-6 rounded-lg border border-border">
               <h2 className="text-xl font-semibold mb-4">Add Wine</h2>
-              <WineForm bins={bins} onSuccess={fetchWines} />
+              <WineForm bins={bins} onSuccess={() => {fetchWines(); setView('cellar')}} />
             </div>
           </div>
         )}
