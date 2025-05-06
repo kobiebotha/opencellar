@@ -1,0 +1,12 @@
+version: "2"
+authtoken: yourAuthToken
+tunnels:
+    frontend:
+        proto: http
+        addr: 3000
+        host_header: localhost:3000
+    supabase:
+        proto: http
+        addr: 54321
+        host_header: localhost:54321
+api_key: yourApiKey
