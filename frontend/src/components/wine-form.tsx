@@ -122,7 +122,7 @@ export function WineForm({ bins, onSuccess }: { bins: Bin[]; onSuccess: () => vo
           <option value="">Select a bin</option>
           {bins.map((bin) => (
             <option key={bin.id} value={bin.id}>
-              {bin.name}
+              {bin.name} {bin.storage_locations ? `(${bin.storage_locations.name})` : ''}
             </option>
           ))}
         </select>

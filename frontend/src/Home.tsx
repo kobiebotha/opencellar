@@ -38,9 +38,18 @@ export function Home({ user, handleSignOut }: HomeProps) {
       setBins([]);
       return;
     }
+    if (storageLocationIds.length === 0) {
+        // Potentially set bins to empty or handle as an initial state
+        // depending on whether bins can exist without storage locations
+        // or if this is just a transient state during loading.
+        // For now, if there are no storage locations, there can be no bins.
+        console.error('no bins while trying to adda  wine, something went wrong');
+        setBins([]);
+        return;
+      }
     const { data: binsData, error: binsError } = await supabase
       .from('bins')
-      .select()
+      .select('*, storage_locations(name)')
       .in('storage_location_id', storageLocationIds);
 
     if (binsError) {
