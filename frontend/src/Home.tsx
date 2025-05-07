@@ -14,7 +14,7 @@ interface HomeProps {
 }
 
 export function Home({ user, handleSignOut }: HomeProps) {
-  const [view, setView] = useState<'cellar' | 'add'>('cellar');
+  const [view, setView] = useState<'cellar' | 'add' | 'manage_storage'>('cellar');
   const [storageLocations, setStorageLocations] = useState<StorageLocation[]>([]);
   const [bins, setBins] = useState<Bin[]>([]);
   const [wines, setWines] = useState<Wine[]>([]);
@@ -142,13 +142,21 @@ export function Home({ user, handleSignOut }: HomeProps) {
             onClick={() => setView('add')}
             variant={view === 'add' ? 'default' : 'outline'}
           >
-            Add Wine/Location/Bin
+            Add Wine
+          </Button>
+          <Button
+            onClick={() => setView('manage_storage')}
+            variant={view === 'manage_storage' ? 'default' : 'outline'}
+          >
+            Manage Storage
           </Button>
         </div>
 
-        {view === 'cellar' ? (
+        {view === 'cellar' && (
           <WineList wines={wines} onUpdate={fetchWines} isLoading={isLoadingWines} user={user} />
-        ) : (
+        )}
+
+        {view === 'add' && (
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             <div className="p-6 rounded-lg border border-border">
               <h2 className="text-xl font-semibold mb-4">Add Storage Location</h2>
@@ -168,6 +176,12 @@ export function Home({ user, handleSignOut }: HomeProps) {
               <WineForm bins={bins} onSuccess={() => {fetchWines(); setView('cellar')}} />
             </div>
           </div>
+        )}
+
+        {view === 'manage_storage' && (
+            <div>
+                hello
+            </div>
         )}
       </div>
     </div>
