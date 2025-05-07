@@ -1,6 +1,6 @@
 export type StorageLocation = {
   id: string;
-  user_id: number;
+  user_id: string;
   name: string;
 };
 
@@ -8,9 +8,9 @@ export type Bin = {
   id: string;
   storage_location_id: string;
   name: string;
-  storage_locations: { // Added to include storage location details
+  storage_location: {
     name: string;
-  } | null; // It could be null if a bin somehow doesn't have a storage location or if the join fails
+  } | null;
 };
 
 export type Wine = {
