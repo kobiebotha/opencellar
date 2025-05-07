@@ -7,6 +7,7 @@ import { WineList } from './components/wine-list';
 import type { StorageLocation, Bin, Wine } from './lib/types';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from './lib/supabase';
+import { ManageStorage } from './components/manage-storage';
 
 interface HomeProps {
   user: User;
@@ -46,7 +47,7 @@ export function Home({ user, handleSignOut }: HomeProps) {
       }
     const { data: binsData, error: binsError } = await supabase
       .from('bins')
-      .select('*, storage_locations(name)')
+      .select('*, storage_location:storage_locations(name)')
       .in('storage_location_id', storageLocationIds);
 
     if (binsError) {
@@ -152,24 +153,26 @@ export function Home({ user, handleSignOut }: HomeProps) {
           </Button>
         </div>
 
+        {/* WINES */}
         {view === 'cellar' && (
           <WineList wines={wines} onUpdate={fetchWines} isLoading={isLoadingWines} user={user} />
         )}
 
+        {/* ADD WINE */}
         {view === 'add' && (
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <div className="p-6 rounded-lg border border-border">
+            {/* <div className="p-6 rounded-lg border border-border">
               <h2 className="text-xl font-semibold mb-4">Add Storage Location</h2>
               <StorageLocationForm onSuccess={fetchStorageLocations} loggedInUser={user} />
-            </div>
+            </div> */}
 
-            <div className="p-6 rounded-lg border border-border">
+            {/* <div className="p-6 rounded-lg border border-border">
               <h2 className="text-xl font-semibold mb-4">Add Bin</h2>
               <BinForm
                 storageLocations={storageLocations}
                 onSuccess={fetchBins}
               />
-            </div>
+            </div> */}
 
             <div className="p-6 rounded-lg border border-border">
               <h2 className="text-xl font-semibold mb-4">Add Wine</h2>
@@ -178,10 +181,9 @@ export function Home({ user, handleSignOut }: HomeProps) {
           </div>
         )}
 
+        {/* MANAGE STORAGE */}
         {view === 'manage_storage' && (
-            <div>
-                hello
-            </div>
+          <ManageStorage user={user}/>
         )}
       </div>
     </div>

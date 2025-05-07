@@ -6,22 +6,20 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { supabase } from '@/src/lib/supabase';
-import { StorageLocation } from '@/src/lib/types';
-import { Select } from './ui/select';
 
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),
-  storage_location_id: z.string().min(1, 'Storage location is required'),
 });
 
 type FormData = z.infer<typeof schema>;
 
-export function BinForm({ 
-  storageLocations,
-  onSuccess 
-}: { 
-  storageLocations: StorageLocation[];
+export function BinForm({
+  onSuccess,
+  storageLocationId
+}: {
   onSuccess: () => void;
+  loggedInUserId: string;
+  storageLocationId: string;
 }) {
   const {
     register,
@@ -34,39 +32,27 @@ export function BinForm({
 
   const onSubmit = async (data: FormData) => {
     try {
+      const binToInsert = {
+        name: data.name,
+        storage_location_id: storageLocationId
+      };
       const { error } = await supabase
         .from('bins')
-        .insert([data]);
+        .insert([binToInsert]);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error creating bin:', error);
+        throw error;
+      }
       reset();
       onSuccess();
     } catch (error) {
-      console.error('Error creating bin:', error);
+      console.error('Failed in BinForm onSubmit:', error);
     }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div>
-        <Label htmlFor="storage_location_id">Storage Location</Label>
-        <select
-          {...register('storage_location_id')}
-          className="w-full rounded-md border border-input bg-background px-3 py-2"
-        >
-          <option value="">Select a location</option>
-          {storageLocations.map((location) => (
-            <option key={location.id} value={location.id}>
-              {location.name}
-            </option>
-          ))}
-        </select>
-        {errors.storage_location_id && (
-          <p className="text-sm text-destructive">
-            {errors.storage_location_id.message}
-          </p>
-        )}
-      </div>
       <div>
         <Label htmlFor="name">Bin Name</Label>
         <Input id="name" {...register('name')} />
@@ -75,7 +61,7 @@ export function BinForm({
         )}
       </div>
       <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? 'Creating...' : 'Create Bin'}
+        {isSubmitting ? 'Adding Bin...' : 'Add Bin'}
       </Button>
     </form>
   );
